@@ -1,0 +1,58 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(50, 55, 49);
+  font-family: "Reenie Beanie";
+  padding: 1vh 4vh;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  color: antiquewhite;
+  font-size: 5vh;
+}
+
+.logo-icon {
+  padding-left: 2vh;
+}
+
+.navbar a {
+  text-decoration: none;
+}
+
+.list-container {
+  display: flex;
+}
+
+.list-container li {
+  list-style: none;
+  padding-left: 5vh;
+  font-size: 5vh;
+}
+
+.list-container a {
+  color: antiquewhite;
+  text-decoration: none;
+}
+
+.list-container a:hover {
+  color: #666;
+}
+
+@media (max-width: 760px) {
+  .navbar {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    justify-content: center;
+  }
+
+  .list-container {
+    padding-top: 2vh;
+  }
+
+  .list-container a {
+    text-decoration: underline;
+  }
+}
