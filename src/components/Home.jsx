@@ -1,5 +1,5 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
+import UserContext from "../context/UserContext.js"
 import {
   collection,
   addDoc,
@@ -8,18 +8,20 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore"
-import { db } from "../firebase-config/firebase"
+import { db } from "../config/firebaseConfig"
 import { AiOutlineCheck, AiOutlinePlus } from "react-icons/ai"
 import { BsTrash } from "react-icons/bs"
-import "../style/ToDoList.css"
 
-const ToDoList = () => {
+import "../styles/ToDoList.css"
+
+const Home = () => {
+  const { uid } = useContext(UserContext)
   const [inputText, setInputText] = useState("")
   const [toDo, setToDo] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const dateRef = collection(db, "todo")
+      const dateRef = collection(db, "todo", uid, "list")
       const dateSnap = await getDocs(dateRef)
 
       const fetchedData = []
@@ -31,13 +33,13 @@ const ToDoList = () => {
     }
 
     fetchData()
-  }, [])
+  }, []) //eslint-disable-line
 
   const handleAdd = async () => {
     const newToDo = { todo: inputText, done: false }
 
     try {
-      const docRef = await addDoc(collection(db, "todo"), newToDo)
+      const docRef = await addDoc(collection(db, "todo", uid, "list"), newToDo)
       setToDo((prev) => prev.concat({ id: docRef.id, data: newToDo }))
     } catch (e) {
       console.error("Error adding document: ", e)
@@ -47,7 +49,7 @@ const ToDoList = () => {
   }
 
   const handleCheck = async (id) => {
-    const todoRef = doc(db, "todo", id)
+    const todoRef = doc(db, "todo", uid, "list", id)
     await updateDoc(todoRef, { done: true })
     setToDo((prev) =>
       prev.map((item) =>
@@ -58,7 +60,7 @@ const ToDoList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, "todo", id))
+      await deleteDoc(doc(db, "todo", uid, "list", id))
 
       setToDo((prev) => prev.filter((item) => item.id !== id))
     } catch (e) {
@@ -87,6 +89,7 @@ const ToDoList = () => {
             <li key={index}>
               {item.data.done === false ? (
                 <>
+                  {/* eslint-disable-next-line */}
                   <a href="#">
                     <h2>{item.data.todo}</h2>
 
@@ -111,4 +114,4 @@ const ToDoList = () => {
   )
 }
 
-export default ToDoList
+export default Home

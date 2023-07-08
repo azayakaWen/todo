@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
+import UserContext from "../context/UserContext"
 import {
   collection,
   getDocs,
@@ -7,18 +8,19 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore"
-import { db } from "../firebase-config/firebase"
+import { db } from "../config/firebaseConfig"
 import { BsTrash } from "react-icons/bs"
 import { AiOutlineUndo } from "react-icons/ai"
 
-import "../style/ToDoList.css"
+import "../styles/ToDoList.css"
 
 const Done = () => {
+  const { uid } = useContext(UserContext)
   const [toDo, setToDo] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const dateRef = collection(db, "todo")
+      const dateRef = collection(db, "todo", uid, "list")
       const dateSnap = await getDocs(dateRef)
 
       const fetchedData = []
@@ -30,10 +32,10 @@ const Done = () => {
     }
 
     fetchData()
-  }, [])
+  }, []) //eslint-disable-line
 
   const handleUnCheck = async (id) => {
-    const todoRef = doc(db, "todo", id)
+    const todoRef = doc(db, "todo", uid, "list", id)
     await updateDoc(todoRef, { done: false })
     setToDo((prev) =>
       prev.map((item) =>
@@ -44,7 +46,7 @@ const Done = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, "todo", id))
+      await deleteDoc(doc(db, "todo", uid, "list", id))
 
       setToDo((prev) => prev.filter((item) => item.id !== id))
     } catch (e) {
